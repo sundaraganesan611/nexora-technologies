@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d18">
+    <title>Nexora Technologies | Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --admin-bg: #080d18;
+            --admin-panel: #101827;
+            --admin-panel-2: #151f31;
+            --admin-border: rgba(255,255,255,.09);
+            --admin-muted: #9ba8bc;
+            --admin-blue: #3984ff;
+            --admin-cyan: #54d6ff;
+        }
+        body { 
+            min-height: 100vh; 
+            background: 
+            var(--admin-bg); 
+        }
+        .admin-wrap { 
+            width: min(1240px, 94%); 
+            margin: 38px 
+            auto 70px; 
+        }
+        .admin-panel {
+            background: var(--admin-panel);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 22px;
+        }
+        .admin-form { 
+            max-width: 430px; 
+            margin: 70px auto; 
+        }
+        .admin-form input {
+            display: block; width: 100%; box-sizing: border-box;
+            padding: 13px 14px; margin: 8px 0 18px;
+            background: #080c16; color: white;
+            border: 1px solid #303c50; border-radius: 8px;
+        }
+        .admin-form label { 
+            color: #dce6f5; 
+            font-size: 13px; 
+        }
+        .admin-top { 
+            display:flex; 
+            justify-content:space-between; 
+            align-items:center; 
+            gap:16px; 
+            flex-wrap:wrap; 
+        }
+        .admin-top h1 { 
+            margin: 6px 0; 
+        }
+        .admin-subtitle, .muted { 
+            color: var(--admin-muted); 
+            font-size: 13px; 
+        }
+        .admin-stats { 
+            display:grid; 
+            grid-template-columns:repeat(4,minmax(0,1fr)); 
+            gap:14px; 
+            margin-top:25px; 
+        }
+        .stat { 
+            background:var(--admin-panel-2); 
+            border:1px solid var(--admin-border); 
+            padding:20px; 
+            border-radius:12px; 
+        }
+        .stat p { 
+            color:var(--admin-muted); 
+            font-size:12px; 
+            margin:0 0 9px; 
+        }
+        .stat h2 { 
+            font-size:30px; 
+            margin:0; 
+        }
+        .stat small { 
+            color:var(--admin-cyan); 
+            font-size:11px; 
+        }
+        .admin-button, .admin-action {
+            background:var(--admin-blue); 
+            color:white; 
+            border:0; 
+            border-radius:8px;
+            padding:10px 15px; 
+            cursor:pointer; 
+            font-weight:600;
+        }
+        .admin-button.secondary, .admin-action.secondary { 
+            background:#202d42; 
+            border:1px solid #35445c; 
+        }
+        .admin-button:disabled, .admin-action:disabled { 
+            opacity:.55; 
+            cursor:not-allowed; 
+        }
+        .toolbar { 
+            display:grid; 
+            grid-template-columns:minmax(190px,1.5fr) repeat(2,minmax(150px,1fr)) auto auto; gap:10px; margin:20px 0; }
+        .toolbar input, .toolbar select {
+            width:100%; 
+            min-width:0; 
+            box-sizing:border-box; 
+            padding:11px 12px;
+            color:#edf4ff; 
+            background:#080c16; 
+            border:1px solid #303c50; 
+            border-radius:8px;
+        }
+        .table-wrap { overflow-x:auto; }
+        table { 
+            width:100%; 
+            border-collapse:collapse; 
+            min-width:850px; 
+        }
+        th, td { 
+            text-align:left; 
+            padding:14px 12px; 
+            border-bottom:1px solid var(--admin-border); 
+            font-size:13px; 
+            vertical-align:middle; 
+        }
+        th { 
+            color:var(--admin-cyan); 
+            font-weight:600; 
+            white-space:nowrap; 
+        }
+        td { color:#dce6f5; }
+        td select { 
+            background:#080c16; 
+            color:white; 
+            border:1px solid #303c50; 
+            padding:8px; 
+            border-radius:7px; 
+        }
+        .customer-name { 
+            font-weight:600; 
+            color:white; 
+        }
+        .customer-email { 
+            display:block; 
+            color:var(--admin-muted); 
+            font-size:12px; 
+            margin-top:4px; 
+        }
+        .status-pill { 
+            display:inline-block; 
+            padding:5px 9px; 
+            border-radius:20px; 
+            font-size:11px; 
+            background:#253249; 
+            color:#dce6f5; 
+        }
+        .admin-message { 
+            color:var(--admin-cyan); 
+            margin-top:12px; 
+            font-size:13px; 
+            min-height:18px; 
+        }
+        .admin-hidden { 
+            display:none !important; 
+        }
+        .row-actions { 
+            display:flex; 
+            gap:7px; 
+            align-items:center; 
+        }
+        .admin-action { 
+            padding:7px 10px; 
+            font-size:12px; 
+        }
+        .empty-state { 
+            text-align:center; 
+            color:var(--admin-muted); 
+            padding:35px 12px; 
+        }
+        dialog {
+            width:min(620px, calc(100% - 32px)); 
+            border:1px solid #35445c;
+            border-radius:16px; 
+            padding:0; 
+            color:#edf4ff; 
+            background:#101827;
+            box-shadow:0 24px 80px rgba(0,0,0,.55);
+        }
+        dialog::backdrop { 
+            background:rgba(0,0,0,.72); 
+            backdrop-filter:blur(4px); 
+        }
+        .modal-head, .modal-body, .modal-foot { 
+            padding:20px 22px; 
+        }
+        .modal-head { 
+            display:flex; 
+            justify-content:space-between; 
+            gap:15px; 
+            border-bottom:1px solid var(--admin-border); 
+        }
+        .modal-head h2 { 
+            margin:0; 
+            font-size:20px; 
+        }
+        .modal-body { 
+            display:grid; 
+            gap:15px; 
+        }
+        .detail-label { 
+            color:var(--admin-muted); 
+            font-size:11px; 
+            text-transform:uppercase; 
+            letter-spacing:1px; 
+            margin-bottom:5px; 
+        }
+        .detail-value { 
+            white-space:pre-wrap; 
+            overflow-wrap:anywhere; 
+            line-height:1.6; 
+        }
+        .modal-foot { 
+            border-top:1px solid var(--admin-border); 
+            display:flex; 
+            justify-content:flex-end; 
+        }
+        @media(max-width:850px) {
+            .toolbar { 
+                grid-template-columns:1fr 1fr; 
+            }
+            .toolbar input { 
+                grid-column:1/-1; 
+            }
+            .admin-stats { 
+                grid-template-columns:repeat(2,minmax(0,1fr));
+            }
+        }
+        @media(max-width:520px) {
+            .admin-wrap { 
+                width:92%; 
+                margin-top:22px; 
+            }
+            .admin-panel { 
+                padding:16px; 
+            }
+            .admin-stats { 
+                gap:9px; 
+            }
+            .stat { 
+                padding:15px; 
+            }
+            .stat h2 { 
+                font-size:25px; 
+            }
+            .toolbar { 
+                grid-template-columns:1fr; 
+            }
+            .toolbar input { 
+                grid-column:auto; 
+            }
+            .admin-top h1 { 
+                font-size:25px; 
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrap">
+    <section id="loginSection" class="admin-panel admin-form">
+        <h2>NEXORA <span class="gradient-text">ADMIN</span></h2>
+        <p class="muted" style="margin:10px 0 25px">Sign in to manage customer enquiries.</p>
+        <form id="loginForm">
+            <label for="adminEmail">Email Address</label>
+            <input type="email" id="adminEmail" autocomplete="username" required>
+            <label for="adminPassword">Password</label>
+            <input type="password" id="adminPassword" autocomplete="current-password" required>
+            <button id="loginButton" class="btn btn-primary" type="submit" style="width:100%">Login to Dashboard</button>
+        </form>
+        <p id="loginMessage" class="admin-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="dashboardSection" class="admin-hidden">
+        <header class="admin-top">
+            <div>
+                <span class="eyebrow">NEXORA TECHNOLOGIES</span>
+                <h1>Admin Dashboard</h1>
+                <p class="admin-subtitle">Monitor and manage your customer enquiries.</p>
+            </div>
+            <div class="row-actions">
+                <button id="refreshButton" class="admin-button secondary" type="button">↻ Refresh</button>
+                <button id="logoutButton" class="admin-button" type="button">Logout ↗</button>
+            </div>
+        </header>
+
+        <div class="admin-stats">
+            <article class="stat"><p>Total Enquiries</p><h2 id="totalCount">0</h2><small>All received enquiries</small></article>
+            <article class="stat"><p>New</p><h2 id="newCount">0</h2><small>Awaiting review</small></article>
+            <article class="stat"><p>In Progress</p><h2 id="progressCount">0</h2><small>Being handled</small></article>
+            <article class="stat"><p>Completed</p><h2 id="completedCount">0</h2><small>Successfully completed</small></article>
+        </div>
+
+        <section class="admin-panel">
+            <div class="admin-top">
+                <div>
+                    <h2 style="margin:0">Customer Enquiries</h2>
+                    <p class="muted" style="margin:6px 0 0">Search, filter, review and update customer requests.</p>
+                </div>
+                <button id="exportButton" class="admin-button secondary" type="button">↓ Export CSV</button>
+            </div>
+
+            <div class="toolbar">
+                <input id="searchInput" type="search" placeholder="Search name, email or message..." aria-label="Search enquiries">
+                <select id="statusFilter" aria-label="Filter by status">
+                    <option value="">All statuses</option>
+                    <option value="New">New</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <select id="serviceFilter" aria-label="Filter by service">
+                    <option value="">All services</option>
+                </select>
+                <button id="clearFiltersButton" class="admin-button secondary" type="button">Clear filters</button>
+            </div>
+
+            <p id="dashboardMessage" class="admin-message" role="status" aria-live="polite"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Customer</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="enquiryTable"></tbody>
+                </table>
+            </div>
+            <p id="resultCount" class="muted"></p>
+        </section>
+    </section>
+</div>
+
+<dialog id="enquiryDialog">
+    <div class="modal-head">
+        <div><span class="eyebrow">CUSTOMER ENQUIRY</span><h2 id="detailTitle">Enquiry details</h2></div>
+        <button id="closeDialogTop" class="admin-button secondary" type="button" aria-label="Close details">✕</button>
+    </div>
+    <div class="modal-body">
+        <div><div class="detail-label">Customer</div><div class="detail-value" id="detailName"></div></div>
+        <div><div class="detail-label">Email</div><div class="detail-value" id="detailEmail"></div></div>
+        <div><div class="detail-label">Requested service</div><div class="detail-value" id="detailService"></div></div>
+        <div><div class="detail-label">Received</div><div class="detail-value" id="detailDate"></div></div>
+        <div><div class="detail-label">Project details</div><div class="detail-value" id="detailMessage"></div></div>
+    </div>
+    <div class="modal-foot"><button id="closeDialogButton" class="admin-button" type="button">Close</button></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+
+<script src="admin.js"></script>
+</body>
+</html>
