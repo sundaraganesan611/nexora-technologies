@@ -69,8 +69,14 @@ export default async function handler(req, res) {
         const verificationResult = await verification.json();
 
         if (!verification.ok || !verificationResult.success) {
+            console.error(
+                "Turnstile error codes:",
+                verificationResult["error-codes"]
+            );
+            
             return res.status(403).json({
-                error: "Security verification failed. Please try again."
+                error: "Security verification failed. Please try again.",
+                codes: verificationResult["error-codes"] || []
             });
         }
 
