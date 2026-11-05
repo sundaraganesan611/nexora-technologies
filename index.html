@@ -307,31 +307,39 @@
                         </div>
                     </div>
 
-                    <form id="contactForm" class="contact-form">
-                        <label for="name">Your Name</label>
-                       <input id="name" type="text" required minlength="2">
+                    
+                <form id="contactForm" class="contact-form">
+                    <label for="name">Your Name</label>
+                    <input id="name" type="text" required minlength="2">
 
-                        <label for="email">Email Address</label>
-                        <input id="email" type="email" required>
+                    <label for="email">Email Address</label>
+                    <input id="email" type="email" required>
+                    
+                    <label for="service">Interested Service</label>
+                    <select id="service" required>
+                        <option value="">Select a service</option>
+                        <option value="Website Development">Website Development</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                        <option value="Web Applications">Web Applications</option>
+                        <option value="Digital Solutions">Digital Solutions</option>
+                    </select>
 
-                        <label for="service">Interested Service</label>
-                        <select id="service" required>
-                            <option value="">Select a service</option>
-                            <option value="Website Development">Website Development</option>
-                            <option value="UI/UX Design">UI/UX Design</option>
-                            <option value="Web Applications">Web Applications</option>
-                            <option value="Digital Solutions">Digital Solutions</option>
-                        </select>
+                <label for="message">Project Details</label>
+                <textarea id="message" required minlength="5"></textarea>
 
-                        <label for="message">Project Details</label>
-                        <textarea id="message" required minlength="5"></textarea>
+                <!-- Cloudflare Turnstile -->
+                <div
+                    class="cf-turnstile"
+                    data-sitekey="0x4AAAAAAF0wGBy8MluNH23B">
+                </div>
 
-                        <button type="submit" class="btn btn-primary form-button">
-                            Send Enquiry ↗
-                        </button>
+                <button type="submit" class="btn btn-primary form-button">
+                    Send Enquiry ↗
+                </button>
 
-                        <p id="formMessage" class="form-message" role="status"></p>
-                    </form>
+                <p id="formMessage" class="form-message" role="status"></p>
+                </form>
+
                 </div>
             </div>
         </section>
@@ -357,6 +365,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
