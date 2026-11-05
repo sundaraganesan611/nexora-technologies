@@ -70,13 +70,13 @@ export default async function handler(req, res) {
 
         if (!verification.ok || !verificationResult.success) {
             console.error(
-                "Turnstile error codes:",
-                verificationResult["error-codes"]
+                "Turnstile verification failed:",
+                verificationResult["error-codes"] || []
+            
             );
             
             return res.status(403).json({
-                error: "Security verification failed. Please try again.",
-                codes: verificationResult["error-codes"] || []
+                error: "Security verification failed. Please try again."
             });
         }
 
