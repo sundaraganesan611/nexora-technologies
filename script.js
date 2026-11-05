@@ -1,7 +1,9 @@
+
 console.log("NEXORA SCRIPT LOADED");
 
 import { createClient } from
     "https://esm.sh/@supabase/supabase-js@2";
+
 // MOBILE NAVIGATION
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.getElementById("navLinks");
@@ -26,24 +28,27 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 document.getElementById("year").textContent =
     new Date().getFullYear();
 
-// CONTACT FORM
-
-// SUPABASE CONNECTION
-const supabaseClient = createClient(
-    window.NEXORA_CONFIG.SUPABASE_URL,
-    window.NEXORA_CONFIG.SUPABASE_KEY
-);
+// SUPABASE CONFIGURATION
+const SUPABASE_URL = window.NEXORA_CONFIG.SUPABASE_URL;
+const SUPABASE_KEY = window.NEXORA_CONFIG.SUPABASE_KEY;
 
 // CONTACT FORM
 const contactForm = document.getElementById("contactForm");
 const formMessage = document.getElementById("formMessage");
+const honeypotField = document.getElementById("website");
 
 contactForm.addEventListener("submit", async function(event) {
     event.preventDefault();
-    console.log("CONTACT FORM SUBMITTED");
 
     if (!contactForm.checkValidity()) {
         contactForm.reportValidity();
+        return;
+    }
+
+    // HONEYPOT PROTECTION
+    if (honeypotField && honeypotField.value.trim() !== "") {
+        formMessage.textContent =
+            "Unable to submit your enquiry. Please try again.";
         return;
     }
 
@@ -58,6 +63,7 @@ contactForm.addEventListener("submit", async function(event) {
         message: document.getElementById("message").value.trim()
     };
 
+    // CLIENT-SIDE VALIDATION
     if (
         enquiry.name.length < 2 ||
         enquiry.name.length > 100 ||
@@ -71,13 +77,35 @@ contactForm.addEventListener("submit", async function(event) {
 
     submitButton.disabled = true;
     submitButton.textContent = "Submitting...";
+    formMessage.textContent = "";
 
     try {
-        const { error } = await supabaseClient
-            .from("enquiries")
-            .insert([enquiry]);
+        // SEND ENQUIRY THROUGH EDGE FUNCTION
+        const response = await fetch(
+            `${SUPABASE_URL}/functions/v1/submit-enquiry`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_KEY
+                },
+                body: JSON.stringify(enquiry)
+            }
+        );
 
-        if (error) throw error;
+        const result = await response.json();
+
+        if (response.status === 429) {
+            throw new Error(
+                "Too many enquiries. Please try again later."
+            );
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Unable to submit your enquiry."
+            );
+        }
 
         formMessage.textContent =
             "Thank you! Your enquiry was submitted successfully.";
@@ -88,7 +116,7 @@ contactForm.addEventListener("submit", async function(event) {
         console.error("Enquiry submission failed:", error);
 
         formMessage.textContent =
-            "Unable to submit your enquiry. Please try again.";
+            error.message || "Unable to submit your enquiry. Please try again.";
 
     } finally {
         submitButton.disabled = false;
@@ -96,6 +124,7 @@ contactForm.addEventListener("submit", async function(event) {
     }
 });
 
+// CLOSE MOBILE MENU WHEN CLICKING OUTSIDE
 document.addEventListener("click", function(event) {
     const clickedInsideMenu = navLinks.contains(event.target);
     const clickedToggle = menuToggle.contains(event.target);
