@@ -1,8 +1,4 @@
-
 console.log("NEXORA SCRIPT LOADED");
-
-import { createClient } from
-    "https://esm.sh/@supabase/supabase-js@2";
 
 // MOBILE NAVIGATION
 const menuToggle = document.getElementById("menuToggle");
@@ -10,7 +6,6 @@ const navLinks = document.getElementById("navLinks");
 
 menuToggle.addEventListener("click", () => {
     const isOpen = navLinks.classList.toggle("active");
-
     menuToggle.setAttribute("aria-expanded", isOpen);
     menuToggle.textContent = isOpen ? "✕" : "☰";
 });
@@ -56,11 +51,24 @@ contactForm.addEventListener("submit", async function(event) {
         'button[type="submit"]'
     );
 
+    // GET TURNSTILE TOKEN
+    const turnstileToken =
+        contactForm.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
+
+    if (!turnstileToken) {
+        formMessage.textContent =
+            "Please complete the security verification.";
+        return;
+    }
+
     const enquiry = {
         name: document.getElementById("name").value.trim(),
         email: document.getElementById("email").value.trim(),
         service: document.getElementById("service").value,
-        message: document.getElementById("message").value.trim()
+        message: document.getElementById("message").value.trim(),
+        turnstile_token: turnstileToken
     };
 
     // CLIENT-SIDE VALIDATION
@@ -71,7 +79,8 @@ contactForm.addEventListener("submit", async function(event) {
         enquiry.message.length < 5 ||
         enquiry.message.length > 5000
     ) {
-        formMessage.textContent = "Please check your details.";
+        formMessage.textContent =
+            "Please check your details.";
         return;
     }
 
@@ -80,7 +89,7 @@ contactForm.addEventListener("submit", async function(event) {
     formMessage.textContent = "";
 
     try {
-        // SEND ENQUIRY THROUGH EDGE FUNCTION
+        // SEND ENQUIRY THROUGH SUPABASE EDGE FUNCTION
         const response = await fetch(
             `${SUPABASE_URL}/functions/v1/submit-enquiry`,
             {
@@ -112,11 +121,19 @@ contactForm.addEventListener("submit", async function(event) {
 
         contactForm.reset();
 
+        if (window.turnstile) {
+            window.turnstile.reset();
+        }
+
     } catch (error) {
         console.error("Enquiry submission failed:", error);
 
         formMessage.textContent =
             error.message || "Unable to submit your enquiry. Please try again.";
+
+        if (window.turnstile) {
+            window.turnstile.reset();
+        }
 
     } finally {
         submitButton.disabled = false;
