@@ -7,7 +7,10 @@ const db = window.supabase.createClient(
     window.NEXORA_CONFIG.SUPABASE_KEY
 );
 
-const ADMIN_EMAIL = "sundars1046@gmail.com".toLowerCase();
+const ADMIN_EMAILS = [
+    "sundars1046@gmail.com",
+    "tthiruppathi696@gmail.com"
+].map(email => email.toLowerCase());
 
 const $ = (id) => document.getElementById(id);
 
@@ -83,7 +86,7 @@ async function checkAdmin() {
         const signedInEmail =
             (session.user.email || "").toLowerCase();
 
-        if (signedInEmail !== ADMIN_EMAIL) {
+        if (!ADMIN_EMAILS.includes(signedInEmail)) {
             await db.auth.signOut();
 
             loginSection.classList.remove("admin-hidden");
