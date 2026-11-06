@@ -37,6 +37,7 @@
     </header>
 
     <main>
+
         <!-- HERO -->
         <section class="hero section" id="home">
             <div class="hero-glow"></div>
@@ -246,6 +247,7 @@
                         </div>
                     </article>
                 </div>
+
                 <p class="portfolio-note">
                     * These are illustrative project concepts, not claims
                     of completed client work.
@@ -307,9 +309,23 @@
                         </div>
                     </div>
 
+                    <!-- CONTACT FORM -->
                     <form id="contactForm" class="contact-form">
+
+                        <!-- HONEYPOT: BOT PROTECTION -->
+                        <div class="honeypot-field" aria-hidden="true">
+                            <label for="website">Leave this field empty</label>
+                            <input
+                                type="text"
+                                id="website"
+                                name="website"
+                                tabindex="-1"
+                                autocomplete="off"
+                            >
+                        </div>
+
                         <label for="name">Your Name</label>
-                       <input id="name" type="text" required minlength="2">
+                        <input id="name" type="text" required minlength="2">
 
                         <label for="email">Email Address</label>
                         <input id="email" type="email" required>
@@ -335,6 +351,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <!-- FOOTER -->
@@ -348,6 +365,7 @@
             </a>
 
             <p>Build. Innovate. Transform.</p>
+
             <p class="copyright">
                 © <span id="year"></span> Nexora Technologies.
                 All rights reserved.
@@ -355,8 +373,10 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script type="module" src="script.js"></script>
+
 </body>
 </html>

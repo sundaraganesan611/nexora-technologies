@@ -446,8 +446,15 @@ function exportCSV() {
         item.created_at
     ]);
 
-    const escapeCSV = value =>
-        `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const escapeCSV = value => {
+        const text = String(value ?? "");
+        const safeText = /^[\s\u0000-\u001f]*[=+\-@]/u.test(text) ||
+            /^[\t\r\n]/.test(text)
+            ? `'${text}`
+            : text;
+
+        return `"${safeText.replace(/"/g, '""')}"`;
+    };
 
     const csv = [headers, ...rows]
         .map(row => row.map(escapeCSV).join(","))

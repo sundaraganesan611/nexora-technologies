@@ -720,6 +720,17 @@ button, input, textarea, select {
     margin-top: 10px;
 }
 
+/* Honeypot field: hidden from human visitors */
+.honeypot-field {
+    display: none !important;
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
 .form-message {
     font-size: 12px;
     color: var(--cyan);

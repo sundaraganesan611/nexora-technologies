@@ -1,0 +1,13 @@
+# Local Supabase temporary files
+supabase/.temp/
+
+# VS Code settings and cache
+.vscode/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
