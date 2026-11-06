@@ -1,4 +1,3 @@
-
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 // Only allow your website and local development.
@@ -92,13 +91,14 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
     const hashSecret = Deno.env.get("RATE_LIMIT_HASH_SECRET");
+    const turnstileSecret = Deno.env.get("TURNSTILE_SECRET_KEY");
 
-    if (!supabaseUrl || !serviceKey || !hashSecret) {
+    if (!supabaseUrl || !serviceKey || !hashSecret || !turnstileSecret) {
       throw new Error("Server configuration is incomplete");
     }
 
     // Use only gateway-provided client IP headers.
-  const ip = req.headers.get("cf-connecting-ip");
+    const ip = req.headers.get("cf-connecting-ip");
 
     if (!ip || ip.length > 64) {
       return jsonResponse(
@@ -157,6 +157,48 @@ Deno.serve(async (req: Request) => {
     }
 
     const enquiry = JSON.parse(rawBody);
+
+    const turnstileToken = typeof enquiry.turnstile_token === "string"
+      ? enquiry.turnstile_token.trim()
+      : "";
+
+    if (!turnstileToken) {
+      return jsonResponse(
+        { error: "Please complete security verification." },
+        400,
+        origin,
+      );
+    }
+
+    // Verify Cloudflare Turnstile token
+    const verification = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          secret: turnstileSecret,
+          response: turnstileToken,
+          remoteip: ip.trim(),
+        }),
+      },
+    );
+
+    const verificationResult = await verification.json();
+
+    if (!verification.ok || !verificationResult.success) {
+      console.error(
+        "Turnstile verification failed:",
+        verificationResult["error-codes"] || [],
+      );
+      return jsonResponse(
+        { error: "Security verification failed. Please try again." },
+        403,
+        origin,
+      );
+    }
 
     const name = typeof enquiry.name === "string"
       ? enquiry.name.trim()
