@@ -1,15 +1,69 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Nexora Technologies builds modern websites and digital solutions for growing businesses.">
-    <meta name="theme-color" content="#080c16">
+    <meta name="theme-color" content="#080808">
     <title>Nexora Technologies | Build. Innovate. Transform.</title>
+    
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- LUXURY SKELETON SCREEN (DISSOLVES ON LOAD) -->
+    <div id="pageSkeleton" class="page-skeleton" aria-hidden="true">
+        <div class="skeleton-nav container">
+            <div class="skeleton skeleton-logo"></div>
+            <div class="skeleton-links">
+                <div class="skeleton skeleton-pill" style="width: 55px;"></div>
+                <div class="skeleton skeleton-pill" style="width: 65px;"></div>
+                <div class="skeleton skeleton-pill" style="width: 55px;"></div>
+                <div class="skeleton skeleton-pill" style="width: 70px;"></div>
+                <div class="skeleton skeleton-btn" style="width: 105px;"></div>
+            </div>
+        </div>
+        <div class="skeleton-hero container">
+            <div class="skeleton-hero-left">
+                <div class="skeleton skeleton-eyebrow" style="width: 210px; height: 26px;"></div>
+                <div class="skeleton skeleton-headline" style="width: 90%; height: 50px; margin-top: 25px;"></div>
+                <div class="skeleton skeleton-headline" style="width: 75%; height: 50px; margin-top: 12px;"></div>
+                <div class="skeleton skeleton-headline" style="width: 60%; height: 50px; margin-top: 12px;"></div>
+                <div class="skeleton skeleton-desc" style="width: 85%; height: 16px; margin-top: 28px;"></div>
+                <div class="skeleton skeleton-desc" style="width: 65%; height: 16px; margin-top: 10px;"></div>
+                <div class="skeleton-btn-row" style="margin-top: 36px; display: flex; gap: 16px;">
+                    <div class="skeleton skeleton-btn" style="width: 160px; height: 48px;"></div>
+                    <div class="skeleton skeleton-btn" style="width: 160px; height: 48px;"></div>
+                </div>
+            </div>
+            <div class="skeleton-hero-right">
+                <div class="skeleton skeleton-hero-card" style="height: 380px;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            function removeSkeleton() {
+                var s = document.getElementById("pageSkeleton");
+                if (s && !s.classList.contains("skeleton-hidden")) {
+                    s.classList.add("skeleton-hidden");
+                    setTimeout(function() { if (s && s.parentNode) s.parentNode.removeChild(s); }, 350);
+                }
+            }
+            if (document.readyState === "interactive" || document.readyState === "complete") {
+                removeSkeleton();
+            } else {
+                document.addEventListener("DOMContentLoaded", removeSkeleton);
+                window.addEventListener("load", removeSkeleton);
+            }
+            setTimeout(removeSkeleton, 600);
+        })();
+    </script>
 
     <!-- NAVBAR -->
     <header class="header">
@@ -327,35 +381,34 @@
                         <label for="name">Your Name</label>
                         <input id="name" type="text" required minlength="2">
 
+                        <label for="email">Email Address</label>
+                        <input id="email" type="email" required>
+                        
+                        <label for="service">Interested Service</label>
+                        <select id="service" required>
+                            <option value="">Select a service</option>
+                            <option value="Website Development">Website Development</option>
+                            <option value="UI/UX Design">UI/UX Design</option>
+                            <option value="Web Applications">Web Applications</option>
+                            <option value="Digital Solutions">Digital Solutions</option>
+                        </select>
 
-                    <label for="email">Email Address</label>
-                    <input id="email" type="email" required>
-                    
-                    <label for="service">Interested Service</label>
-                    <select id="service" required>
-                        <option value="">Select a service</option>
-                        <option value="Website Development">Website Development</option>
-                        <option value="UI/UX Design">UI/UX Design</option>
-                        <option value="Web Applications">Web Applications</option>
-                        <option value="Digital Solutions">Digital Solutions</option>
-                    </select>
+                        <label for="message">Project Details</label>
+                        <textarea id="message" required minlength="5"></textarea>
 
-                <label for="message">Project Details</label>
-                <textarea id="message" required minlength="5"></textarea>
+                        <!-- Cloudflare Turnstile -->
+                        <div
+                            class="cf-turnstile"
+                            data-sitekey="0x4AAAAAAF0wGBy8MluNH23B"
+                            data-theme="dark">
+                        </div>
 
-                <!-- Cloudflare Turnstile -->
-                <div
-                    class="cf-turnstile"
-                    data-sitekey="0x4AAAAAAF0wGBy8MluNH23B">
-                </div>
+                        <button type="submit" class="btn btn-primary form-button">
+                            Send Enquiry ↗
+                        </button>
 
-                <button type="submit" class="btn btn-primary form-button">
-                    Send Enquiry ↗
-                </button>
-
-                <p id="formMessage" class="form-message" role="status"></p>
-                </form>
-
+                        <p id="formMessage" class="form-message" role="status"></p>
+                    </form>
                 </div>
             </div>
         </section>
@@ -385,7 +438,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>

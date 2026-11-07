@@ -1,5 +1,25 @@
 console.log("NEXORA SCRIPT LOADED");
 
+// SKELETON PRELOADER CONTROLLER
+function dismissPageSkeleton() {
+    const skeleton = document.getElementById("pageSkeleton");
+    if (skeleton && !skeleton.classList.contains("skeleton-hidden")) {
+        skeleton.classList.add("skeleton-hidden");
+        setTimeout(() => {
+            if (skeleton && skeleton.parentNode) {
+                skeleton.parentNode.removeChild(skeleton);
+            }
+        }, 500);
+    }
+}
+
+if (document.readyState === "complete") {
+    dismissPageSkeleton();
+} else {
+    window.addEventListener("load", dismissPageSkeleton);
+    setTimeout(dismissPageSkeleton, 1200);
+}
+
 // MOBILE NAVIGATION
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.getElementById("navLinks");

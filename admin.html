@@ -8,13 +8,66 @@
     <link rel="stylesheet" href="style.css">
     <style>
         :root {
-            --admin-bg: #080d18;
-            --admin-panel: #101827;
-            --admin-panel-2: #151f31;
-            --admin-border: rgba(255,255,255,.09);
-            --admin-muted: #9ba8bc;
-            --admin-blue: #3476e0;
-            --admin-cyan: #54d6ff;
+            --admin-bg: #080808;
+            --admin-panel: #121212;
+            --admin-panel-2: #181818;
+            --admin-border: rgba(214, 179, 106, 0.16);
+            --admin-muted: #BDBDBD;
+            --admin-blue: #D6B36A;
+            --admin-cyan: #D6B36A;
+        }
+
+        /* SKELETON LOADER ANIMATIONS & STYLES */
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background: #181818;
+            background: linear-gradient(
+                90deg,
+                #181818 0%,
+                rgba(214, 179, 106, 0.16) 50%,
+                #181818 100%
+            );
+            background-size: 200% 100%;
+            animation: adminSkeletonShimmer 1.6s infinite ease-in-out;
+            border-radius: 6px;
+            display: inline-block;
+            vertical-align: middle;
+            border: 1px solid rgba(214, 179, 106, 0.08);
+        }
+
+        @keyframes adminSkeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-text {
+            height: 14px;
+            display: block;
+        }
+
+        .skeleton-badge {
+            height: 22px;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .skeleton-button {
+            height: 28px;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .skeleton-number {
+            height: 32px;
+            width: 55px;
+            display: block;
+            margin: 4px 0;
+            border-radius: 6px;
+        }
+
+        .skeleton-row td {
+            padding: 16px 12px;
         }
         body { 
             min-height: 100vh; 

@@ -120,6 +120,39 @@ async function checkAdmin() {
     }
 }
 
+// SKELETON LOADERS FOR DASHBOARD
+function showEnquirySkeletons(count = 5) {
+    enquiryTable.replaceChildren();
+
+    for (let i = 0; i < count; i++) {
+        const row = document.createElement("tr");
+        row.className = "skeleton-row";
+
+        row.innerHTML = `
+            <td><span class="skeleton skeleton-text" style="width: 45px;"></span></td>
+            <td>
+                <span class="skeleton skeleton-text" style="width: 140px; margin-bottom: 6px;"></span>
+                <span class="skeleton skeleton-text" style="width: 190px; height: 11px; opacity: 0.7;"></span>
+            </td>
+            <td><span class="skeleton skeleton-badge" style="width: 115px;"></span></td>
+            <td><span class="skeleton skeleton-text" style="width: 90px;"></span></td>
+            <td><span class="skeleton skeleton-badge" style="width: 95px; height: 26px;"></span></td>
+            <td><span class="skeleton skeleton-button" style="width: 55px;"></span></td>
+        `;
+
+        enquiryTable.appendChild(row);
+    }
+}
+
+function showStatsSkeletons() {
+    ["totalCount", "newCount", "progressCount", "completedCount"].forEach(id => {
+        const el = $(id);
+        if (el) {
+            el.innerHTML = '<span class="skeleton skeleton-number"></span>';
+        }
+    });
+}
+
 // LOAD CUSTOMER ENQUIRIES
 async function loadEnquiries() {
     const refreshButton = $("refreshButton");
@@ -127,6 +160,8 @@ async function loadEnquiries() {
     refreshButton.disabled = true;
 
     setMessage(dashboardMessage, "Loading enquiries...");
+    showStatsSkeletons();
+    showEnquirySkeletons(5);
 
     try {
         const { data, error } = await db
@@ -149,6 +184,11 @@ async function loadEnquiries() {
 
     } catch (error) {
         console.error("Loading enquiries failed:", error);
+
+        allEnquiries = [];
+        visibleEnquiries = [];
+        updateStats();
+        renderEnquiries();
 
         setMessage(
             dashboardMessage,
